@@ -55,7 +55,7 @@ module Screenhero
           guid.add_text("#{@name} #{@version}")
 
           enclosure = item.add_element("enclosure")
-          enclosure.attributes["type"] = "application/dmg" #DMG only for now
+          enclosure.attributes["type"] = "application/octet-stream"
           enclosure.attributes["sparkle:version"] = @version
           enclosure.attributes["length"] = @update_length
           enclosure.attributes["sparkle:dsaSignature"] = @update_signature
