@@ -1,9 +1,9 @@
 ruby-appcast
 ============
 
-ruby sparkle.xml generator
+Ruby appcast.xml generator for Sparkle Framework
 
-Tested with ruby 2.0
+Tested with Ruby 2.1
 
 ### Very simple (hard-coded) example
 
