@@ -6,8 +6,10 @@ module Screenhero
   module Sparkle
     class AppCast
       class Item
+        ReleaseNotesLink = Struct.new(:lang, :url)
+
         def initialize(name: '', update_path: '', version: '0.0.0',
-          publish_date: Time.now, update_url: '', release_notes_url: '',
+          publish_date: Time.now, update_url: '', release_notes_links: [],
           minimum_system_version: '', dsa_priv: nil)
           raise ArgumentError, "Missing dsa_priv parameter" if !dsa_priv
 
@@ -16,7 +18,7 @@ module Screenhero
           @version = version
           @publish_date = publish_date
           @update_url = update_url
-          @release_notes_url = release_notes_url
+          @release_notes_links = release_notes_links
           @minimum_system_version = minimum_system_version
           @dsa_priv = dsa_priv
           @dsa_signature = nil
@@ -48,7 +50,13 @@ module Screenhero
           item = @xml
 
           item.add_element("title").add_text("#{@name} #{@version}")
-          item.add_element("sparkle:releaseNotesLink").add_text("#{@release_notes_url}")
+
+          @release_notes_links.each do |release_notes|
+          # item.add_element("sparkle:releaseNotesLink").add_text("#{@release_notes_url}")
+            link = item.add_element("sparkle:releaseNotesLink").add_text("#{release_notes.url}")
+            link.attributes["xml:lang"] = release_notes.lang
+          end
+
           item.add_element("sparkle:minimumSystemVersion").add_text("#{@minimum_system_version}")
           item.add_element("pubDate").add_text(@publish_date.strftime("%a, %d %h %Y %H:%M:%S %z"))
 
@@ -114,9 +122,9 @@ module Screenhero
         atom.attributes["href"] = @appcast_url
       end
 
-      def add_item(version, update_path, update_url, release_notes_url="", minimum_system_version="")
+      def add_item(version, update_path, update_url, release_notes_links=[], minimum_system_version="")
         @xml.elements["/rss/channel"] << Item.new(name: @name, update_path: update_path,
-          version: version, release_notes_url: release_notes_url,
+          version: version, release_notes_links: release_notes_links,
           update_url: update_url, minimum_system_version: minimum_system_version, dsa_priv: @dsa_priv).xml
       end
 
