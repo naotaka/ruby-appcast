@@ -52,7 +52,6 @@ module Screenhero
           item.add_element("title").add_text("#{@name} #{@version}")
 
           @release_notes_links.each do |release_notes|
-          # item.add_element("sparkle:releaseNotesLink").add_text("#{@release_notes_url}")
             link = item.add_element("sparkle:releaseNotesLink").add_text("#{release_notes.url}")
             link.attributes["xml:lang"] = release_notes.lang
           end
