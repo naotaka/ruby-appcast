@@ -8,7 +8,7 @@ module Screenhero
       class Item
         def initialize(name: '', update_path: '', version: '0.0.0',
           publish_date: Time.now, update_url: '', release_notes_url: '',
-          dsa_priv: nil)
+          minimum_system_version: '', dsa_priv: nil)
           raise ArgumentError, "Missing dsa_priv parameter" if !dsa_priv
 
           @name = name
@@ -17,6 +17,7 @@ module Screenhero
           @publish_date = publish_date
           @update_url = update_url
           @release_notes_url = release_notes_url
+          @minimum_system_version = minimum_system_version
           @dsa_priv = dsa_priv
           @dsa_signature = nil
           @update_signature = nil
@@ -48,6 +49,7 @@ module Screenhero
 
           item.add_element("title").add_text("#{@name} #{@version}")
           item.add_element("sparkle:releaseNotesLink").add_text("#{@release_notes_url}")
+          item.add_element("sparkle:minimumSystemVersion").add_text("#{@minimum_system_version}")
           item.add_element("pubDate").add_text(@publish_date.strftime("%a, %d %h %Y %H:%M:%S %z"))
 
           guid = item.add_element("guid")
@@ -112,10 +114,10 @@ module Screenhero
         atom.attributes["href"] = @appcast_url
       end
 
-      def add_item(version, update_path, update_url, release_notes_url="")
+      def add_item(version, update_path, update_url, release_notes_url="", minimum_system_version="")
         @xml.elements["/rss/channel"] << Item.new(name: @name, update_path: update_path,
           version: version, release_notes_url: release_notes_url,
-          update_url: update_url, dsa_priv: @dsa_priv).xml
+          update_url: update_url, minimum_system_version: minimum_system_version, dsa_priv: @dsa_priv).xml
       end
 
       def to_s
